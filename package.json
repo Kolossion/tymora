@@ -1,0 +1,28 @@
+{
+  "name": "tymora",
+  "version": "1.0.0",
+  "description": "Stuff for DnD table rolling",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "ava",
+    "test:verbose": "ava -v",
+    "lint": "./node_modules/.bin/eslint ./index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kolossion/tymora.git"
+  },
+  "author": "TJ Cole",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Kolossion/tymora/issues"
+  },
+  "homepage": "https://github.com/Kolossion/tymora#readme",
+  "devDependencies": {
+    "ava": "^0.25.0",
+    "eslint": "^4.16.0"
+  },
+  "dependencies": {
+    "ramda": "^0.25.0"
+  }
+}
