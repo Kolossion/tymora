@@ -16,15 +16,11 @@ const testTable = {
   ]
 };
 
-test("1 equals 1", t => {
-  t.is(1, 1);
-});
-
-test("table size works", t => {
+test("getTableSize properly calculates based on ranges", t => {
   t.is(8, tymora.getTableSize(testTable));
 });
 
-test("building index map", t => {
+test("makeIndexMap ", t => {
   t.deepEqual(
     [0,1,1,1,1,2,2,2],
     tymora.makeIndexMap(testTable)

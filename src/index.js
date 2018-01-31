@@ -30,7 +30,20 @@ const makeIndexMap = (table) => {
   return indexMap;
 };
 
+const subRoll = (content) => {
+  const numRegex = /\#\{([0-9]+\-[0-9]+)\}/g;
+  const dieRegex = /d\{([0-9]+d[0-9]+(?:[+-][0-9]+)?)\}/gi;
+
+  var matches = content.match(numRegex);
+
+  console.log(matches);
+};
+
+
+subRoll("#{4-9} kobolds and #{3-6} butts");
+
 module.exports = {
   getTableSize: getTableSize,
-  makeIndexMap: makeIndexMap
+  makeIndexMap: makeIndexMap,
+  subRoll: subRoll
 };
