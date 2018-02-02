@@ -30,20 +30,29 @@ const makeIndexMap = (table) => {
   return indexMap;
 };
 
-const subRoll = (content) => {
-  const numRegex = /\#\{([0-9]+\-[0-9]+)\}/g;
-  const dieRegex = /d\{([0-9]+d[0-9]+(?:[+-][0-9]+)?)\}/gi;
+/* When a table row's content is grabbed, it then needs to be searched for
+ * items that use the roll syntax, either getting numbers, dice, or another
+ * table. This function returns an object containing all matches, separated
+ * by type. 
+ */
+const getSubRolls = (content) => {
+  const numRegex = /\#\{\ ?([0-9]+\-[0-9]+)\ ?\}/g;
+  const dieRegex = /d\{\ ?([0-9]+d[0-9]+(?:[+-][0-9]+)?)\ ?\}/gi;
+  const tableRegex = /t\{\ ?([A-Za-z0-9_]+)\ ?\}/gi;
 
-  var matches = content.match(numRegex);
+  var numMatches = content.match(numRegex);
+  var dieMatches = content.match(dieRegex);
+  var tableMatches = content.match(tableRegex);
 
-  console.log(matches);
+  return {
+    numbers: numMatches,
+    dice: dieMatches,
+    tables: tableMatches,
+  };
 };
-
-
-subRoll("#{4-9} kobolds and #{3-6} butts");
 
 module.exports = {
   getTableSize: getTableSize,
   makeIndexMap: makeIndexMap,
-  subRoll: subRoll
+  getSubRolls: getSubRolls
 };
