@@ -3,6 +3,8 @@ const R = require("ramda");
 const TableSet = require("../src/tableSet.js");
 const Util = require("../src/util.js");
 
+const TEST_SEED = "testSeed";
+
 const testTableContext1 = {
   arcticEncounters: {
     title: "Arctic Encounters (lvl 1-4)",
@@ -173,5 +175,59 @@ test("getSubRolls(content) - Regex Test", t => {
     expectedSubRolls,
     Util.getSubRolls(testContent)
   );
+
+});
+
+// using the test seed to get consistent results
+test("roll(tableName) - Basic Functionality", t => {
+
+  const roller = new TableSet(testTableContext1, TEST_SEED);
+
+  const result = roller.roll("arcticEncounters");
+
+  t.is(
+    "#{4-7} trappers (commoners)",
+    result
+  );
+
+});
+
+// using the test seed to get consistent results
+test("roll(tableName) - Default Table Functionality", t => {
+
+  const roller = new TableSet(testTableContext1, TEST_SEED);
+
+  t.is(
+    null,
+    roller.defaultTable
+  );
+
+  roller.setDefaultTable("arcticEncounters");
+
+  t.is(
+    "arcticEncounters",
+    roller.defaultTable
+  );
+
+  const result = roller.roll();
+
+  t.is(
+    "#{4-7} trappers (commoners)",
+    result
+  );
+
+});
+
+// using the test seed to get consistent results
+test("roll(tableName) - Error handling, arguments", t => {
+
+  const roller = new TableSet(testTableContext1, TEST_SEED);
+
+  t.throws(() => { roller.roll(""); }, TypeError);
+  t.throws(() => { roller.roll(null); }, TypeError);
+  t.throws(() => { roller.roll(1); }, TypeError);
+  t.throws(() => { roller.roll([]); }, TypeError);
+  t.throws(() => { roller.roll({}); }, TypeError);
+  t.throws(() => { roller.roll("notATable"); }, ReferenceError);
 
 });

@@ -1,12 +1,20 @@
 const R = require("ramda");
+const Chance = require("chance");
+const Util = require("./util.js");
 
 module.exports = class TableSet {
 
   /* Constructs a TableSet object given an initial tableContext. Allows empty initial context.
   */
-  constructor(tableContext = {}) {
+  constructor(tableContext = {}, seed = null) {
     this.tableContext = tableContext;
     this.defaultTable = null;
+
+    if (seed == null) {
+      this.rng = new Chance();
+    } else {
+      this.rng = new Chance(seed);
+    }
   }
 
   /* Adds a table to the context.
@@ -56,6 +64,30 @@ module.exports = class TableSet {
       this.defaultTable = tableName;
     }
 
+  }
+
+
+  /* Main roll function! Rolls on either the default table or a table name
+  * passed in
+  *
+  */
+  roll (tableName = this.defaultTable) {
+    const tableList = this.getTableList();
+
+    if (tableName === "" || typeof tableName != "string" || tableName == null) {
+      throw new TypeError("Table name must be a string.");
+    }
+    if (!R.contains(tableName, tableList)) {
+      throw new ReferenceError("Table with name " + tableName + " doesn't exist in this TableSet.");
+    }
+
+    const table = this.tableContext[tableName];
+
+    const rolledRow = this.rng.integer({min: 1, max: this.getTableSize(tableName)});
+    const indexMap = Util.makeIndexMap(table);
+    const rolledIndex = indexMap[rolledRow-1];
+    return table.rows[rolledIndex].content;
+   
   }
 
 };
