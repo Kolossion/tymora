@@ -1,6 +1,7 @@
 const test = require("ava");
 const R = require("ramda");
-const TableSet = require("../index");
+const TableSet = require("../src/tableSet.js");
+const Util = require("../src/util.js");
 
 const testTableContext1 = {
   arcticEncounters: {
@@ -130,5 +131,47 @@ test("setDefaultTable(tableName) - Error handling, arguments", t => {
   t.throws(() => { roller.setDefaultTable([]); }, TypeError);
   t.throws(() => { roller.setDefaultTable({}); }, TypeError);
   t.throws(() => { roller.setDefaultTable("notATable"); }, ReferenceError);
+
+});
+
+test("makeIndexMap(table) - Basic Functionality.", t => {
+
+  const indexMap = Util.makeIndexMap(testTableContext1.arcticEncounters);
+  const expectedMap = [0,1,1,1,1,2,2,2];
+
+  t.deepEqual(
+    expectedMap,
+    indexMap
+  );
+
+});
+
+test("getSubRolls(content) - Basic Functionality.", t => {
+  const testContent = "#{4-9} kobolds and d{1d4-3} t{table}.";
+  const expectedSubRolls = {
+    numbers: ["#{4-9}"],
+    dice: ["d{1d4-3}"],
+    tables: ["t{table}"],
+  };
+
+  t.deepEqual(
+    expectedSubRolls,
+    Util.getSubRolls(testContent)
+  );
+
+});
+
+test("getSubRolls(content) - Regex Test", t => {
+  const testContent = "#{ 4-9 } kobolds and d{ 1d4-3 } t{ table }.";
+  const expectedSubRolls = {
+    numbers: ["#{ 4-9 }"],
+    dice: ["d{ 1d4-3 }"],
+    tables: ["t{ table }"],
+  };
+
+  t.deepEqual(
+    expectedSubRolls,
+    Util.getSubRolls(testContent)
+  );
 
 });
