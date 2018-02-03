@@ -1,13 +1,14 @@
 const R = require("ramda");
 
-module.exports = class RollTable {
+module.exports = class TableSet {
 
-  /* Constructs a RollTable object given an initial tableContext. Allows empty initial context.
+  /* Constructs a TableSet object given an initial tableContext. Allows empty initial context.
   * 
   * 
   */
   constructor(tableContext = {}) {
     this.tableContext = tableContext;
+    this.defaultTable = null;
   }
 
   /* Adds a table to the context.
@@ -24,7 +25,7 @@ module.exports = class RollTable {
   * TODO: Add check for missing tableName and type checking.
   */
   getTableSize (tableName) {
-    if (tableName === "" || typeof tableName != "string") {
+    if (tableName === "" || typeof tableName != "string" || tableName == null) {
       throw new TypeError("getTableSize requires a non-empty string.");
     }
 
@@ -38,9 +39,27 @@ module.exports = class RollTable {
   * 
   */
   getTableList () {
-    return R.keys(this.tablecontext);
+    return R.keys(this.tableContext);
   }
 
+  /* Sets the default table to roll on. Modifies a bunch of different functions.
+  *  
+  *  TODO: Implement default table stuff in future functions when written.
+  */
+  setDefaultTable (tableName) {
+
+    if (tableName === "" || typeof tableName != "string" || tableName == null) {
+      throw new TypeError("Default table name must be a string.");
+    }
+
+    const tableList = this.getTableList();
+    if (!R.contains(tableName, tableList)) {
+      throw new ReferenceError("Table with name " + tableName + " doesn't exist in this TableSet.");
+    } else {
+      this.defaultTable = tableName;
+    }
+
+  }
   /* To return the proper index within a table, an index
   * map is required to map from a roll to the proper index
   * within the list of rows. This is to account for tables

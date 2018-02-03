@@ -1,6 +1,6 @@
 const test = require("ava");
 const R = require("ramda");
-const RollTable = require("../index");
+const TableSet = require("../index");
 
 const testTableContext1 = {
   arcticEncounters: {
@@ -38,18 +38,22 @@ const testTableContext2 = {
 
 test("constructor() - Basic functionality", t => {
 
-  const newTable = new RollTable(testTableContext1);
+  const newTable = new TableSet(testTableContext1);
 
   t.deepEqual(
     testTableContext1,
     newTable.tableContext
+  );
+  t.is(
+    null,
+    newTable.defaultTable
   );
 
 });
 
 test("addTable() - Basic functionality", t => {
 
-  const roller = new RollTable(testTableContext1); 
+  const roller = new TableSet(testTableContext1); 
   roller.addTable(testTableContext2);
 
   t.deepEqual(
@@ -61,7 +65,7 @@ test("addTable() - Basic functionality", t => {
 
 test("getTableSize(tableName) - Basic Functionality", t => {
 
-  const roller = new RollTable(testTableContext1);
+  const roller = new TableSet(testTableContext1);
   const tableSize = roller.getTableSize("arcticEncounters");
 
   t.is(
@@ -73,11 +77,58 @@ test("getTableSize(tableName) - Basic Functionality", t => {
 
 test("getTableSize(tableName) - Error handling, arguments", t => {
 
-  const roller = new RollTable(testTableContext1);
+  const roller = new TableSet(testTableContext1);
 
   t.throws(() => { roller.getTableSize(""); }, TypeError);
+  t.throws(() => { roller.getTableSize(null); }, TypeError);
   t.throws(() => { roller.getTableSize(1); }, TypeError);
   t.throws(() => { roller.getTableSize([]); }, TypeError);
   t.throws(() => { roller.getTableSize({}); }, TypeError);
+
+});
+
+test("getTableList() - Basic Functionality", t => {
+
+  const tableNames = ["arcticEncounters", "forestEncounters"];
+
+  const roller = new TableSet(testTableContext1);
+  roller.addTable(testTableContext2);
+
+  t.deepEqual(
+    tableNames,
+    roller.getTableList()
+  );
+
+});
+
+
+test("setDefaultTable(tableName) - Basic Functionality", t => {
+
+  const roller = new TableSet(testTableContext1);
+
+  t.is(
+    null,
+    roller.defaultTable
+  );
+
+  roller.setDefaultTable("arcticEncounters");
+
+  t.is(
+    "arcticEncounters",
+    roller.defaultTable
+  );
+
+});
+
+test("setDefaultTable(tableName) - Error handling, arguments", t => {
+
+  const roller = new TableSet(testTableContext1);
+
+  t.throws(() => { roller.setDefaultTable(""); }, TypeError);
+  t.throws(() => { roller.setDefaultTable(null); }, TypeError);
+  t.throws(() => { roller.setDefaultTable(1); }, TypeError);
+  t.throws(() => { roller.setDefaultTable([]); }, TypeError);
+  t.throws(() => { roller.setDefaultTable({}); }, TypeError);
+  t.throws(() => { roller.setDefaultTable("notATable"); }, ReferenceError);
 
 });
