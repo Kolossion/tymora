@@ -4,8 +4,7 @@
   "description": "Stuff for DnD table rolling",
   "main": "src/index.js",
   "scripts": {
-    "test": "ava",
-    "test:verbose": "ava -v",
+    "test": "ava -v",
     "lint": "./node_modules/.bin/eslint ./index.js"
   },
   "repository": {
