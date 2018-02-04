@@ -1,7 +1,8 @@
 const test = require("ava");
 const R = require("ramda");
-const TableSet = require("../src/tableSet.js")("testSeed");
+const TableSet = require("../src/tableSet.js");
 const Util = require("../src/util.js");
+const TEST_SEED = "testSeed";
 
 const testTableContext1 = {
   arcticEncounters: {
@@ -180,6 +181,7 @@ test("getSubRolls(content) - Regex Test", t => {
 test("roll(tableName) - Basic Functionality", t => {
 
   const roller = new TableSet(testTableContext1);
+  roller.setSeed(TEST_SEED);
 
   const result = roller.roll("arcticEncounters");
 
@@ -194,6 +196,7 @@ test("roll(tableName) - Basic Functionality", t => {
 test("roll(tableName) - Default Table Functionality", t => {
 
   const roller = new TableSet(testTableContext1);
+  roller.setSeed(TEST_SEED);
 
   t.is(
     null,
