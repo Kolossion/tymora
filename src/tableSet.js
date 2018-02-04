@@ -5,8 +5,6 @@ const Util = require("./util.js");
 module.exports = class TableSet {
 
   /* Constructs a TableSet object given an initial tableContext. Allows empty initial context.
-  *  
-  *  
   */
   constructor(tableContext = {}) {
     this.tableContext = tableContext;
@@ -30,12 +28,15 @@ module.exports = class TableSet {
 
   /* Returns the total possible row results in table. This is
   * to account for tables with same results for different die rolls.
-  * 
-  * TODO: Add check for missing tableName.
   */
   getTableSize (tableName) {
     if (tableName === "" || typeof tableName != "string" || tableName == null) {
       throw new TypeError("getTableSize requires a non-empty string.");
+    }
+
+    const tableList = this.getTableList();
+    if (!R.contains(tableName, tableList)) {
+      throw new ReferenceError("Table with name " + tableName + " doesn't exist in this TableSet.");
     }
 
     return R.compose(
