@@ -70,6 +70,17 @@ module.exports = class TableSet {
 
   }
 
+  /* This will build out a result object, including sub rolls. This has to be
+  *  in the TableSet scope since it needs access to the table context.
+  * 
+  *  TODO: Add support for all subroll types.
+  */
+  processResult (resultStr) {
+    console.log(resultStr);
+
+    const subrolls = Util.getSubRolls(resultStr);
+  }
+
 
   /* Main roll function! Rolls on either the default table or a table name
   * passed in

@@ -177,6 +177,30 @@ test("getSubRolls(content) - Regex Test", t => {
 
 });
 
+test("processResult(resultStr) - Basic Functionality, Number Subroll.", t => {
+
+  const roller = new TableSet();
+  roller.setSeed(TEST_SEED);
+  const exampleResult = "#{4-7} trappers (commoners)";
+
+  const resultObj = roller.processResult(exampleResult);
+
+  t.deepEqual(
+    { rawResult: exampleResult,
+      result: "6 trappers (commoners)",
+      subRolls: [
+        { input: "#{4-7}",
+          rawResult: "6",
+          result: "6",
+          subRolls: []
+        }
+      ]
+    },
+    resultObj
+  );
+
+});
+
 // using the test seed to get consistent results
 test("roll(tableName) - Basic Functionality", t => {
 
