@@ -177,7 +177,7 @@ test("getSubRolls(content) - Regex Test", t => {
 
 });
 
-test("processResult(resultStr) - Basic Functionality, Number Subroll.", t => {
+test.skip("processResult(resultStr) - Basic Functionality, Number Subroll.", t => {
 
   const roller = new TableSet();
   roller.setSeed(TEST_SEED);
