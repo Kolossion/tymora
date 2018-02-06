@@ -177,24 +177,17 @@ test("getSubRolls(content) - Regex Test", t => {
 
 });
 
-test.skip("processResult(resultStr) - Basic Functionality, Number Subroll.", t => {
+test("processTableRoll(input) - Basic Functionality", t => {
 
-  const roller = new TableSet();
+  const roller = new TableSet(testTableContext1);
   roller.setSeed(TEST_SEED);
-  const exampleResult = "#{4-7} trappers (commoners)";
 
-  const resultObj = roller.processResult(exampleResult);
+  const exampleResult = "#{4-7} trappers (commoners)";
+  const resultObj = roller.processTableRoll("t{arcticEncounters}");
 
   t.deepEqual(
-    { rawResult: exampleResult,
-      result: "6 trappers (commoners)",
-      subRolls: [
-        { input: "#{4-7}",
-          rawResult: "6",
-          result: "6",
-          subRolls: []
-        }
-      ]
+    { input: "t{arcticEncounters}",
+      rawResult: exampleResult
     },
     resultObj
   );
@@ -209,8 +202,10 @@ test("roll(tableName) - Basic Functionality", t => {
 
   const result = roller.roll("arcticEncounters");
 
-  t.is(
-    "#{4-7} trappers (commoners)",
+  t.deepEqual(
+    { input: "t{arcticEncounters}",
+      rawResult: "#{4-7} trappers (commoners)"
+    },
     result
   );
 
@@ -236,8 +231,10 @@ test("roll(tableName) - Default Table Functionality", t => {
 
   const result = roller.roll();
 
-  t.is(
-    "#{4-7} trappers (commoners)",
+  t.deepEqual(
+    { input: "t{arcticEncounters}",
+      rawResult: "#{4-7} trappers (commoners)"
+    },
     result
   );
 

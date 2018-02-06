@@ -24,6 +24,13 @@ module.exports = {
     
   },
 
+  getSubRollContent (subRoll) {
+    const subRollRegex = /.\{([A-Za-z0-9-_+*]*)\}/i;
+    var matches = subRoll.match(subRollRegex);
+
+    return matches[1];
+  },
+
 
   /* When a table row's content is grabbed, it then needs to be searched for
   *  items that use the roll syntax, either getting numbers, dice, or another

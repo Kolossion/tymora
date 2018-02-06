@@ -70,28 +70,32 @@ module.exports = class TableSet {
 
   }
 
-  /* This will build out a result object, including sub rolls. This has to be
-  *  in the TableSet scope since it needs access to the table context.
+  /* Processes a dice roll statement. Since dice don't have subrolls, won't have to worry.
   * 
-  *  TODO: Add support for all subroll types.
+  *  TODO: Add rolls for other types of subroll statements.
   */
-  processResult (resultStr) {
-    console.log(resultStr);
+  processDiceRoll (input) {
+    if (input === "d{}" || typeof input != "string" || input == null) {
+      throw new TypeError("Die roll statement must be a string.");
+    }
 
-    const subrolls = Util.getSubRolls(resultStr);
+
+
+
   }
 
-
-  /* Main roll function! Rolls on either the default table or a table name
-  * passed in
-  *
+  /* Processes a table roll statement. Does a lot of the heavy lifting of rolling.
+  * 
+  *  TODO: Add rolls for other types of subroll statements.
   */
-  roll (tableName = this.defaultTable) {
-    const tableList = this.getTableList();
-
-    if (tableName === "" || typeof tableName != "string" || tableName == null) {
+  processTableRoll (input) {
+    if (input === "t{}" || typeof input != "string" || input == null) {
       throw new TypeError("Table name must be a string.");
     }
+
+    const tableList = this.getTableList();
+    const tableName = Util.getSubRollContent(input);
+
     if (!R.contains(tableName, tableList)) {
       throw new ReferenceError("Table with name " + tableName + " doesn't exist in this TableSet.");
     }
@@ -101,8 +105,25 @@ module.exports = class TableSet {
     const rolledRow = this.rng.integer({min: 1, max: this.getTableSize(tableName)});
     const indexMap = Util.makeIndexMap(table);
     const rolledIndex = indexMap[rolledRow-1];
-    return table.rows[rolledIndex].content;
-  
+    const result = table.rows[rolledIndex].content;
+
+    return {
+      input: input,
+      rawResult: result,
+      // subrolls: this.buildSubrollList(Util.getSubRolls(result))
+    };
+  }
+
+
+  /* Main roll function! Rolls on either the default table or a table name
+  * passed in
+  */
+  roll (tableName = this.defaultTable) {
+    if (tableName === "" || typeof tableName != "string" || tableName == null) {
+      throw new TypeError("Table name must be a string.");
+    }
+
+    return this.processTableRoll("t{" + tableName + "}");
   }
 
 };
