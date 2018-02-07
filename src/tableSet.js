@@ -11,12 +11,14 @@ module.exports = class TableSet {
     this.tableContext = tableContext;
     this.defaultTable = null;
     this.rng = new Chance();
+    this.dice = Dice(this.rng);
   }
 
   /* Set Chance.js seed
   */
   setSeed (seed) {
     this.rng = new Chance(seed);
+    this.dice = Dice(this.rng);
   }
 
   /* Adds a table to the context.
@@ -71,6 +73,34 @@ module.exports = class TableSet {
 
   }
 
+  buildSubrollList (subRolls) {
+    const subrollList = R.unnest([
+      R.map(this.processDiceRoll.bind(this), subRolls.dice),
+      R.map(this.processTableRoll.bind(this), subRolls.tables),
+      R.map(this.processNumberRoll.bind(this), subRolls.numbers)
+    ]);
+    return subrollList;
+  }
+
+  processNumberRoll (input) {
+    const self = this;
+    if (input === "#{}" || typeof input != "string" || input == null) {
+      throw new TypeError("number roll statement must be a string.");
+    }
+
+    const numberRegex = /#\{([0-9]+)-([0-9]+)\}/i;
+    const numMatches = input.match(numberRegex);
+    const result = self.rng.natural({min: +numMatches[1], max: +numMatches[2]}); 
+
+    return {
+      type: "number",
+      input: input,
+      rawResult: result,
+      subrolls: []
+    };
+
+  }
+
   /* Processes a dice roll statement. Since dice don't have subrolls, won't have to worry.
   * 
   *  TODO: Add rolls for other types of subroll statements.
@@ -81,9 +111,10 @@ module.exports = class TableSet {
     }
 
     const diceStatement = Util.getSubRollContent(input);
-    const diceSum = Dice(this.rng).rollTotal(diceStatement);
+    const diceSum = this.dice.rollSum(diceStatement);
 
     return {
+      type: "dice",
       input: input,
       rawResult: diceSum,
       subrolls: []
@@ -116,9 +147,10 @@ module.exports = class TableSet {
     const subRolls = Util.getSubRolls(result);
 
     return {
+      type: "table",
       input: input,
       rawResult: result,
-      // subrolls: this.buildSubrollList(subRolls)
+      subrolls: this.buildSubrollList(subRolls)
     };
   }
 

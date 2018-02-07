@@ -187,9 +187,35 @@ test("processTableRoll(input) - Basic Functionality", t => {
 
   t.deepEqual(
     { input: "t{arcticEncounters}",
-      rawResult: exampleResult
+      rawResult: exampleResult,
+      type: "table",
+      subrolls: [
+        { input: "#{4-7}",
+          rawResult: 7,
+          type: "number",
+          subrolls: []
+        }
+      ]
     },
     resultObj
+  );
+
+});
+
+test("processDiceRoll(input) - Basic Functionality", t => {
+
+  const roller = new TableSet(testTableContext1);
+  roller.setSeed(TEST_SEED);
+
+  const result = roller.processDiceRoll("d{1d4+1}");
+
+  t.deepEqual(
+    { input: "d{1d4+1}",
+      rawResult: 5,
+      subrolls: [],
+      type: "dice"
+    },
+    result
   );
 
 });
@@ -204,7 +230,15 @@ test("roll(tableName) - Basic Functionality", t => {
 
   t.deepEqual(
     { input: "t{arcticEncounters}",
-      rawResult: "#{4-7} trappers (commoners)"
+      rawResult: "#{4-7} trappers (commoners)",
+      type: "table",
+      subrolls: [
+        { input: "#{4-7}",
+          rawResult: 7,
+          type: "number",
+          subrolls: []
+        }
+      ]
     },
     result
   );
@@ -233,7 +267,15 @@ test("roll(tableName) - Default Table Functionality", t => {
 
   t.deepEqual(
     { input: "t{arcticEncounters}",
-      rawResult: "#{4-7} trappers (commoners)"
+      rawResult: "#{4-7} trappers (commoners)",
+      type: "table",
+      subrolls: [
+        { input: "#{4-7}",
+          rawResult: 7,
+          type: "number",
+          subrolls: []
+        }
+      ]
     },
     result
   );

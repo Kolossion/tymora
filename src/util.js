@@ -42,9 +42,9 @@ module.exports = {
     const dieRegex = /d\{ ?([0-9]+d[0-9]+(?:[+-][0-9]+)?) ?\}/gi;
     const tableRegex = /t\{ ?([A-Za-z0-9_]+) ?\}/gi;
 
-    var numMatches = content.match(numRegex);
-    var dieMatches = content.match(dieRegex);
-    var tableMatches = content.match(tableRegex);
+    var numMatches = content.match(numRegex) || [];
+    var dieMatches = content.match(dieRegex) || [];
+    var tableMatches = content.match(tableRegex) || [];
 
     return {
       numbers: numMatches,

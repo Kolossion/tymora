@@ -1,4 +1,6 @@
+const R = require("ramda");
 const dicePartRegex = /([0-9]+d[0-9]+)((?:[+-][0-9]+)*)?/i;
+
 module.exports = (rng) => {
   return {
     getExpressionParts (statement) {
@@ -11,7 +13,8 @@ module.exports = (rng) => {
     },
 
     rollSum (statement) {
-      console.log(statement);
+      const rolls = this.roll(statement);
+      return R.sum(rolls);
 
     },
 
@@ -19,9 +22,9 @@ module.exports = (rng) => {
       const rollParts = this.getExpressionParts(statement);
 
       const rolls = rng.rpg(rollParts.dice);
-      console.log(rolls);
+      const modifier = eval(rollParts.modifiers);
 
-
+      return rolls.concat(modifier);
     }
   };
 };
