@@ -1,5 +1,3 @@
-const R = require("ramda");
-
 module.exports = {
   /* To return the proper index within a table, an index
   *  map is required to map from a roll to the proper index
@@ -25,7 +23,7 @@ module.exports = {
   },
 
   getSubRollContent (subRoll) {
-    const subRollRegex = /.\{([A-Za-z0-9-_+*]*)\}/i;
+    const subRollRegex = /.\{([A-Za-z0-9-_+]*)\}/i;
     var matches = subRoll.match(subRollRegex);
 
     return matches[1];

@@ -1,6 +1,7 @@
 const R = require("ramda");
 const Chance = require("chance");
 const Util = require("./util.js");
+const Dice = require("./dice.js");
 
 module.exports = class TableSet {
 
@@ -79,8 +80,14 @@ module.exports = class TableSet {
       throw new TypeError("Die roll statement must be a string.");
     }
 
+    const diceStatement = Util.getSubRollContent(input);
+    const diceSum = Dice(this.rng).rollTotal(diceStatement);
 
-
+    return {
+      input: input,
+      rawResult: diceSum,
+      subrolls: []
+    };
 
   }
 
@@ -106,11 +113,12 @@ module.exports = class TableSet {
     const indexMap = Util.makeIndexMap(table);
     const rolledIndex = indexMap[rolledRow-1];
     const result = table.rows[rolledIndex].content;
+    const subRolls = Util.getSubRolls(result);
 
     return {
       input: input,
       rawResult: result,
-      // subrolls: this.buildSubrollList(Util.getSubRolls(result))
+      // subrolls: this.buildSubrollList(subRolls)
     };
   }
 
