@@ -1,6 +1,7 @@
 const R = require("ramda");
 const Chance = require("chance");
 const Util = require("./util.js");
+const Dice = require("./dice.js");
 
 module.exports = class TableSet {
 
@@ -10,12 +11,14 @@ module.exports = class TableSet {
     this.tableContext = tableContext;
     this.defaultTable = null;
     this.rng = new Chance();
+    this.dice = Dice(this.rng);
   }
 
   /* Set Chance.js seed
   */
   setSeed (seed) {
     this.rng = new Chance(seed);
+    this.dice = Dice(this.rng);
   }
 
   /* Adds a table to the context.
@@ -41,7 +44,7 @@ module.exports = class TableSet {
 
     return R.compose(
       R.sum,
-      R.map((elem) => { return elem.range; })
+      R.map((elem) => { return elem.weight; })
     )(this.tableContext[tableName].rows);
   }
 
@@ -70,17 +73,67 @@ module.exports = class TableSet {
 
   }
 
+  buildSubrollList (subRolls) {
+    const subrollList = R.unnest([
+      R.map(this.processDiceRoll.bind(this), subRolls.dice),
+      R.map(this.processTableRoll.bind(this), subRolls.tables),
+      R.map(this.processNumberRoll.bind(this), subRolls.numbers)
+    ]);
+    return subrollList;
+  }
 
-  /* Main roll function! Rolls on either the default table or a table name
-  * passed in
-  *
+  processNumberRoll (input) {
+    const self = this;
+    if (input === "#{}" || typeof input != "string" || input == null) {
+      throw new TypeError("number roll statement must be a string.");
+    }
+
+    const numberRegex = /#\{([0-9]+)-([0-9]+)\}/i;
+    const numMatches = input.match(numberRegex);
+    const result = self.rng.natural({min: +numMatches[1], max: +numMatches[2]}); 
+
+    return {
+      type: "number",
+      input: input,
+      rawResult: result,
+      subrolls: []
+    };
+
+  }
+
+  /* Processes a dice roll statement. Since dice don't have subrolls, won't have to worry.
+  * 
+  *  TODO: Add rolls for other types of subroll statements.
   */
-  roll (tableName = this.defaultTable) {
-    const tableList = this.getTableList();
+  processDiceRoll (input) {
+    if (input === "d{}" || typeof input != "string" || input == null) {
+      throw new TypeError("Die roll statement must be a string.");
+    }
 
-    if (tableName === "" || typeof tableName != "string" || tableName == null) {
+    const diceStatement = Util.getSubRollContent(input);
+    const diceSum = this.dice.rollSum(diceStatement);
+
+    return {
+      type: "dice",
+      input: input,
+      rawResult: diceSum,
+      subrolls: []
+    };
+
+  }
+
+  /* Processes a table roll statement. Does a lot of the heavy lifting of rolling.
+  * 
+  *  TODO: Add rolls for other types of subroll statements.
+  */
+  processTableRoll (input) {
+    if (input === "t{}" || typeof input != "string" || input == null) {
       throw new TypeError("Table name must be a string.");
     }
+
+    const tableList = this.getTableList();
+    const tableName = Util.getSubRollContent(input);
+
     if (!R.contains(tableName, tableList)) {
       throw new ReferenceError("Table with name " + tableName + " doesn't exist in this TableSet.");
     }
@@ -90,8 +143,27 @@ module.exports = class TableSet {
     const rolledRow = this.rng.integer({min: 1, max: this.getTableSize(tableName)});
     const indexMap = Util.makeIndexMap(table);
     const rolledIndex = indexMap[rolledRow-1];
-    return table.rows[rolledIndex].content;
-  
+    const result = table.rows[rolledIndex].content;
+    const subRolls = Util.getSubRolls(result);
+
+    return {
+      type: "table",
+      input: input,
+      rawResult: result,
+      subrolls: this.buildSubrollList(subRolls)
+    };
+  }
+
+
+  /* Main roll function! Rolls on either the default table or a table name
+  * passed in
+  */
+  roll (tableName = this.defaultTable) {
+    if (tableName === "" || typeof tableName != "string" || tableName == null) {
+      throw new TypeError("Table name must be a string.");
+    }
+
+    return this.processTableRoll("t{" + tableName + "}");
   }
 
 };

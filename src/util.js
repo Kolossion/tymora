@@ -1,5 +1,3 @@
-const R = require("ramda");
-
 module.exports = {
   /* To return the proper index within a table, an index
   *  map is required to map from a roll to the proper index
@@ -13,15 +11,22 @@ module.exports = {
     var indexMap = [];
 
     for (var i = 0; i < rows.length; i++) {
-      const range = rows[i].range;
+      const weight = rows[i].weight;
 
-      for (var j = 0; j < range; j++) {
+      for (var j = 0; j < weight; j++) {
         indexMap.push(i);
       }
     }
 
     return indexMap;
     
+  },
+
+  getSubRollContent (subRoll) {
+    const subRollRegex = /.\{([A-Za-z0-9-_+]*)\}/i;
+    var matches = subRoll.match(subRollRegex);
+
+    return matches[1];
   },
 
 
@@ -37,9 +42,9 @@ module.exports = {
     const dieRegex = /d\{ ?([0-9]+d[0-9]+(?:[+-][0-9]+)?) ?\}/gi;
     const tableRegex = /t\{ ?([A-Za-z0-9_]+) ?\}/gi;
 
-    var numMatches = content.match(numRegex);
-    var dieMatches = content.match(dieRegex);
-    var tableMatches = content.match(tableRegex);
+    var numMatches = content.match(numRegex) || [];
+    var dieMatches = content.match(dieRegex) || [];
+    var tableMatches = content.match(tableRegex) || [];
 
     return {
       numbers: numMatches,

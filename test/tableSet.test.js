@@ -8,13 +8,13 @@ const testTableContext1 = {
   arcticEncounters: {
     title: "Arctic Encounters (lvl 1-4)",
     rows: [
-      { range: 1,
+      { weight: 1,
         content: "1 giant owl"
       }, 
-      { range: 4,
+      { weight: 4,
         content: "#{4-9} kobolds"
       }, 
-      { range: 3,
+      { weight: 3,
         content: "#{4-7} trappers (commoners)"
       }, 
     ]
@@ -25,13 +25,13 @@ const testTableContext2 = {
   forestEncounters: {
     title: "Forest Encounters (lvl 1-4)",
     rows: [
-      { range: 1,
+      { weight: 1,
         content: "1 giant tree"
       }, 
-      { range: 4,
+      { weight: 4,
         content: "#{4-9} rocks"
       }, 
-      { range: 3,
+      { weight: 3,
         content: "#{4-7} druids (druids)"
       }, 
     ]
@@ -177,6 +177,49 @@ test("getSubRolls(content) - Regex Test", t => {
 
 });
 
+test("processTableRoll(input) - Basic Functionality", t => {
+
+  const roller = new TableSet(testTableContext1);
+  roller.setSeed(TEST_SEED);
+
+  const exampleResult = "#{4-7} trappers (commoners)";
+  const resultObj = roller.processTableRoll("t{arcticEncounters}");
+
+  t.deepEqual(
+    { input: "t{arcticEncounters}",
+      rawResult: exampleResult,
+      type: "table",
+      subrolls: [
+        { input: "#{4-7}",
+          rawResult: 7,
+          type: "number",
+          subrolls: []
+        }
+      ]
+    },
+    resultObj
+  );
+
+});
+
+test("processDiceRoll(input) - Basic Functionality", t => {
+
+  const roller = new TableSet(testTableContext1);
+  roller.setSeed(TEST_SEED);
+
+  const result = roller.processDiceRoll("d{1d4+1}");
+
+  t.deepEqual(
+    { input: "d{1d4+1}",
+      rawResult: 5,
+      subrolls: [],
+      type: "dice"
+    },
+    result
+  );
+
+});
+
 // using the test seed to get consistent results
 test("roll(tableName) - Basic Functionality", t => {
 
@@ -185,8 +228,18 @@ test("roll(tableName) - Basic Functionality", t => {
 
   const result = roller.roll("arcticEncounters");
 
-  t.is(
-    "#{4-7} trappers (commoners)",
+  t.deepEqual(
+    { input: "t{arcticEncounters}",
+      rawResult: "#{4-7} trappers (commoners)",
+      type: "table",
+      subrolls: [
+        { input: "#{4-7}",
+          rawResult: 7,
+          type: "number",
+          subrolls: []
+        }
+      ]
+    },
     result
   );
 
@@ -212,8 +265,18 @@ test("roll(tableName) - Default Table Functionality", t => {
 
   const result = roller.roll();
 
-  t.is(
-    "#{4-7} trappers (commoners)",
+  t.deepEqual(
+    { input: "t{arcticEncounters}",
+      rawResult: "#{4-7} trappers (commoners)",
+      type: "table",
+      subrolls: [
+        { input: "#{4-7}",
+          rawResult: 7,
+          type: "number",
+          subrolls: []
+        }
+      ]
+    },
     result
   );
 
