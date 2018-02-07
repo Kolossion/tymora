@@ -44,7 +44,7 @@ module.exports = class TableSet {
 
     return R.compose(
       R.sum,
-      R.map((elem) => { return elem.range; })
+      R.map((elem) => { return elem.weight; })
     )(this.tableContext[tableName].rows);
   }
 

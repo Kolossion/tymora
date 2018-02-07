@@ -8,13 +8,13 @@ const testTableContext1 = {
   arcticEncounters: {
     title: "Arctic Encounters (lvl 1-4)",
     rows: [
-      { range: 1,
+      { weight: 1,
         content: "1 giant owl"
       }, 
-      { range: 4,
+      { weight: 4,
         content: "#{4-9} kobolds"
       }, 
-      { range: 3,
+      { weight: 3,
         content: "#{4-7} trappers (commoners)"
       }, 
     ]
@@ -25,13 +25,13 @@ const testTableContext2 = {
   forestEncounters: {
     title: "Forest Encounters (lvl 1-4)",
     rows: [
-      { range: 1,
+      { weight: 1,
         content: "1 giant tree"
       }, 
-      { range: 4,
+      { weight: 4,
         content: "#{4-9} rocks"
       }, 
-      { range: 3,
+      { weight: 3,
         content: "#{4-7} druids (druids)"
       }, 
     ]

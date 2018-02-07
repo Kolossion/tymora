@@ -11,9 +11,9 @@ module.exports = {
     var indexMap = [];
 
     for (var i = 0; i < rows.length; i++) {
-      const range = rows[i].range;
+      const weight = rows[i].weight;
 
-      for (var j = 0; j < range; j++) {
+      for (var j = 0; j < weight; j++) {
         indexMap.push(i);
       }
     }
