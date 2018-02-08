@@ -18,6 +18,7 @@ module.exports = (rng) => {
 
     },
 
+    // This'll have to be modified once other types of modifiers are allowed.
     roll (statement) {
       const rollParts = this.getExpressionParts(statement);
 
