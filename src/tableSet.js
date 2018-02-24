@@ -73,6 +73,11 @@ module.exports = class TableSet {
 
   }
 
+  /* Takes the subroll object and resolves each of those subrolls. This uses
+  *  a recursive method for table subrolls (since those are the only ones currently
+  *  that allow subrolls)
+  * 
+  */
   buildSubrollList (subRolls) {
     const subrollList = R.unnest([
       R.map(this.processDiceRoll.bind(this), subRolls.dice),
@@ -82,6 +87,10 @@ module.exports = class TableSet {
     return subrollList;
   }
 
+  /* Processes a number roll statement. Since dice don't have subrolls, won't have to worry.
+  * 
+  *  TODO: Add rolls for other types of subroll statements.
+  */
   processNumberRoll (input) {
     const self = this;
     if (input === "#{}" || typeof input != "string" || input == null) {
