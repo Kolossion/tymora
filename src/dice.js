@@ -32,6 +32,7 @@ module.exports = (rng) => {
     *  gets more powerful.
     *
     *  TODO: Add error handling for improper dice statements.
+    *  TODO: Better API for returning more interesting and better organized data.
     */
     roll (statement) {
       const rollParts = this.getExpressionParts(statement);
