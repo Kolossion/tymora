@@ -45,3 +45,22 @@ test("rollSum(statement) - Basic Functionality", t => {
   );
 
 });
+
+test("roll(statement) - Basic Functionality", t => {
+  const die1 = "1d4+3";
+  const die2 = "4d6-2";
+  const dice = Dice(new Chance(TEST_SEED));
+  const rolls1 = dice.roll(die1);
+  const rolls2 = dice.roll(die2);
+
+  t.deepEqual(
+    [4, 3],
+    rolls1
+  );
+
+  t.deepEqual(
+    [3, 3, 2, 6, -2],
+    rolls2
+  );
+
+});
