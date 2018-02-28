@@ -6,9 +6,20 @@ const Dice = require("./dice.js");
 module.exports = class TableSet {
 
   /* Constructs a TableSet object given an initial tableContext. Allows empty initial context.
+  *  Table Context is an object as described below:
+  *  { [tableName]: {
+  *      title: String,
+  *      size: Int,
+  *      rows: [
+  *        { weight(optional): Int,
+  *          content: String
+  *        }
+  *      ]
+  *    }
+  *  }
   */
-  constructor(tableContext = {}) {
-    this.tableContext = tableContext;
+  constructor(initialContext = {}) {
+    this.tableContext = initialContext;
     this.defaultTable = null;
     this.rng = new Chance();
     this.dice = Dice(this.rng);
