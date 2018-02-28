@@ -1,4 +1,3 @@
-const R = require("ramda");
 const Chance = require("chance");
 const Dice = require("./dice.js");
 
@@ -11,6 +10,7 @@ module.exports = class Table {
    *       1) Rolling
    *       2) Subrolling for dice and numbers
    *       3) Getters and setters
+   *       4) Type checking
    */
   constructor(key, name, rows) {
     this.name = name;

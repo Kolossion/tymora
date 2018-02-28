@@ -1,8 +1,5 @@
 const test = require("ava");
-const R = require("ramda");
 const Table = require("../src/table.js");
-const Util = require("../src/util.js");
-const TEST_SEED = "testSeed";
 
 const testTableContext1 = {
   key: "arcticEncounters",
