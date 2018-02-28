@@ -15,13 +15,38 @@ module.exports = class Table {
   constructor(key, name, rows) {
     this.name = name;
     this.key = key;
-    this.rows = rows;
-    // TODO: ProcessRows function to check weights.
-    // this.rows = this.processRows(rows);
+    this.rows = this.processRows(rows);
     // TODO: After above, calcTableSize function.
     // this.size = this.calcTableSize(rows);
     this.rng = new Chance();
     this.dice = Dice(this.rng);
+  }
+
+  /* Processes rows, adding weight values if they're missing. 
+   *  
+   * TODO: Clean up this code.
+   */
+  processRows(rows) {
+    let processed = [];
+    for (let row of rows) {
+      if (typeof(row) == "object") {
+        if (row.weight == null) {
+          row.weight = 1;
+          processed.push(row);
+        } else {
+          processed.push(row);
+        }
+      } else if (typeof(row) == "string") {
+        processed.push(
+          { weight: 1,
+            content: row
+          }
+        );
+      } else {
+        processed.push(row);
+      }
+    }
+    return processed;
   }
 
   /* Set Chance.js seed
