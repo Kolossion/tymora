@@ -1,7 +1,7 @@
 const test = require("ava");
 const Table = require("../src/table.js");
 
-const testTableContext1 = {
+const testTable1 = {
   key: "arcticEncounters",
   name: "Arctic Encounters (lvl 1-4)",
   rows: [
@@ -17,27 +17,40 @@ const testTableContext1 = {
   ]
 };
 
+const processedRows = [
+  { weight: 1,
+    content: "1 giant owl"
+  }, 
+  { weight: 4,
+    content: "#{4-9} kobolds"
+  }, 
+  { weight: 3,
+    content: "#{4-7} trappers (commoners)"
+  }, 
+  { weight: 1,
+    content: "A partridge in a pear tree"
+  }
+];
+
 test("processRows(rows) - Basic functionality", t => {
 
-  const newTable = new Table(testTableContext1.key, testTableContext1.name, testTableContext1.rows);
-  const expectedRows = [
-    { weight: 1,
-      content: "1 giant owl"
-    }, 
-    { weight: 4,
-      content: "#{4-9} kobolds"
-    }, 
-    { weight: 3,
-      content: "#{4-7} trappers (commoners)"
-    }, 
-    { weight: 1,
-      content: "A partridge in a pear tree"
-    }
-  ];
+  const newTable = new Table(testTable1.key, testTable1.name, testTable1.rows);
 
   t.deepEqual(
-    expectedRows,
-    newTable.rows
+    newTable.rows,
+    processedRows
+  );
+
+});
+
+test("calcTableSize(rows) - Basic functionality", t => {
+
+  const newTable = new Table(testTable1.key, testTable1.name, testTable1.rows);
+  const expectedSize = 9;
+
+  t.deepEqual(
+    expectedSize,
+    newTable.size
   );
 
 });

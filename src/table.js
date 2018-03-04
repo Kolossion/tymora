@@ -16,8 +16,7 @@ module.exports = class Table {
     this.name = name;
     this.key = key;
     this.rows = this.processRows(rows);
-    // TODO: After above, calcTableSize function.
-    // this.size = this.calcTableSize(rows);
+    this.size = this.calcTableSize(this.rows);
     this.rng = new Chance();
     this.dice = Dice(this.rng);
   }
@@ -32,21 +31,26 @@ module.exports = class Table {
       if (typeof(row) == "object") {
         if (row.weight == null) {
           row.weight = 1;
-          processed.push(row);
-        } else {
-          processed.push(row);
         }
       } else if (typeof(row) == "string") {
-        processed.push(
-          { weight: 1,
-            content: row
-          }
-        );
-      } else {
-        processed.push(row);
+        row = {
+          weight: 1,
+          content: row
+        };
       }
+
+      processed.push(row);
     }
     return processed;
+  }
+
+  /* Calculates the size of the table as a whole. This assumes rows
+   * have already been processed to include their weight for ease of logic.
+   *
+   * TODO: Type checking
+   */
+  calcTableSize(rows) {
+    return rows.reduce((acc, row) => acc + row.weight, 0);
   }
 
   /* Set Chance.js seed
