@@ -1,5 +1,6 @@
 const Chance = require("chance");
 const Dice = require("./dice.js");
+const Util = require("./util.js");
 
 module.exports = class Table {
   
@@ -12,11 +13,13 @@ module.exports = class Table {
    *       3) Getters and setters
    *       4) Type checking
    */
-  constructor(key, name, rows) {
+  constructor(key, name, rows, author = "unknown") {
     this.name = name;
+    this.author = author;
     this.key = key;
     this.rows = this.processRows(rows);
-    this.size = this.calcTableSize(this.rows);
+    this.indexMap = Util.makeIndexMap(this.rows);
+    this.size = this.indexMap.length;
     this.rng = new Chance();
     this.dice = Dice(this.rng);
   }
@@ -24,6 +27,7 @@ module.exports = class Table {
   /* Processes rows, adding weight values if they're missing. 
    *  
    * TODO: Clean up this code.
+   * TODO: Type checking.
    */
   processRows(rows) {
     let processed = [];
@@ -47,7 +51,7 @@ module.exports = class Table {
   /* Calculates the size of the table as a whole. This assumes rows
    * have already been processed to include their weight for ease of logic.
    *
-   * TODO: Type checking
+   * TODO: Type checking.
    */
   calcTableSize(rows) {
     return rows.reduce((acc, row) => acc + row.weight, 0);
