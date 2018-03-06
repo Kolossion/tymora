@@ -13,12 +13,11 @@ module.exports = class Table {
    *       3) Getters and setters
    *       4) Type checking
    */
-  constructor(key, name, rows, author = "unknown") {
+  constructor(key, name, rows) {
     this.name = name;
-    this.author = author;
     this.key = key;
     this.rows = this.processRows(rows);
-    this.indexMap = Util.makeIndexMap(this.rows);
+    this.indexMap = Util.makeIndexMap({rows: this.rows});
     this.size = this.indexMap.length;
     this.rng = new Chance();
     this.dice = Dice(this.rng);
@@ -62,6 +61,17 @@ module.exports = class Table {
   setSeed (seed) {
     this.rng = new Chance(seed);
     this.dice = Dice(this.rng);
+  }
+
+  /* Rolls on the table. Only returns content string.
+  *
+  */
+  roll () {
+    const rollIndex = this.rng.integer( { min: 0 , max: this.size - 1 } );
+    const rowIndex = this.indexMap[rollIndex];
+    const row = this.rows[rowIndex];
+
+    return row.content;
   }
 
 };

@@ -54,3 +54,17 @@ test("calcTableSize(rows) - Basic functionality", t => {
   );
 
 });
+
+test("roll() - Basic functionality", t => {
+
+  const newTable = new Table(testTable1.key, testTable1.name, testTable1.rows);
+  newTable.setSeed("TEST_SEED");
+  const result = newTable.roll();
+  const expected = "#{4-7} trappers (commoners)";
+
+  t.is(
+    result,
+    expected
+  );
+
+});
